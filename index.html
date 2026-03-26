@@ -436,7 +436,8 @@ html, body { height: 100%; overflow: hidden; background: var(--ms-color-dark, #1
 
 .page-indicator { position: fixed; bottom: 16px; right: 24px; z-index: 99; color: rgba(255,255,255,0.4); pointer-events: none; }
 
-body.scroll-mode { overflow: auto; background: var(--ms-color-light); }
+body.scroll-mode, body.scroll-mode html { overflow: auto !important; height: auto !important; background: var(--ms-color-light); }
+body.scroll-mode .deck { height: auto !important; }
 body.scroll-mode .slide { position: relative; aspect-ratio: 16 / 9; margin: 40px auto; max-width: 1280px; box-shadow: 0 2px 20px rgba(0,0,0,0.15); font-size: 16px; border-radius: 24px; }
 body.scroll-mode .page-indicator { display: none; }
 body.scroll-mode .controls { display: none; }
@@ -533,14 +534,30 @@ body.scroll-mode .controls { display: none; }
 
   /* ── Quote 版型 ── */
   body.scroll-mode .quote-1 { padding: 28px 20px !important; }
+  body.scroll-mode .quote-2 { min-height: 300px; }
   body.scroll-mode .quote-2 .quote-content { padding: 28px 20px !important; }
+  body.scroll-mode .quote-3 { padding: 28px 20px !important; min-height: 250px; }
   body.scroll-mode .quote-3 .quote-text { font-size: 22px !important; }
   body.scroll-mode .quote-1 .quote-deco,
   body.scroll-mode .quote-3 .q3-deco { font-size: 4em !important; }
+  body.scroll-mode .quote-3 .q3-footer { position: relative !important; bottom: auto !important; left: auto !important; right: auto !important; margin-top: 16px; padding: 12px 0 0; }
 
   /* ── Chapter 版型 ── */
   body.scroll-mode .chapter-3 { min-height: 280px; padding: 28px 20px !important; }
   body.scroll-mode .chapter-3 .chapter-bg { position: absolute; }
+
+  /* ── 暗色底 slide 確保文字可讀 ── */
+  body.scroll-mode .slide-end,
+  body.scroll-mode .chapter-2 { padding: 28px 20px !important; min-height: 200px; }
+
+  /* ── 帶 padding:0 的特殊 slide 修正 ── */
+  body.scroll-mode .slide[style*="padding:0"],
+  body.scroll-mode .slide[style*="padding: 0"],
+  body.scroll-mode .slide[style*="padding-bottom:0"],
+  body.scroll-mode .slide[style*="padding-bottom: 0"] { padding: 20px !important; }
+
+  /* ── image-4 類（上文下截圖）── */
+  body.scroll-mode .slide[style*="flex-direction:column"] img { max-width: 100%; height: auto !important; }
 
   /* ── 行內 flex gap 過大修正 ── */
   body.scroll-mode .slide [style*="gap:1.5em"],
