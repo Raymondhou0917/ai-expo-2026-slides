@@ -476,15 +476,17 @@ html.grid-mode .slide .brand-watermark { display: none !important; }
 html.grid-mode .slide .animate-line { opacity: 1 !important; animation: none !important; }
 html.grid-mode .slide::after {
   content: attr(data-slide-num);
-  position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,0.5);
-  font-size: 14px; font-family: var(--ms-font-body-en, sans-serif); font-weight: 600;
+  position: absolute; bottom: 6px; right: 8px;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px; font-family: var(--ms-font-body-en, sans-serif); font-weight: 700;
+  background: rgba(0,0,0,0.55);
+  padding: 2px 8px; border-radius: 6px;
+  z-index: 10; line-height: 1.4;
   white-space: nowrap;
 }
 html.grid-mode .slide.grid-current::after {
-  color: #E77E47;
-  background: rgba(231,126,71,0.15);
-  padding: 2px 14px; border-radius: 12px;
+  color: #fff;
+  background: #E77E47;
 }
 /* 光桌模式下覆蓋固定 px 尺寸（cover-1 右側等） */
 html.grid-mode .cover-1 .cover-1-right { width: 80px; }
