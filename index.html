@@ -436,8 +436,8 @@ html, body { height: 100%; overflow: hidden; background: var(--ms-color-dark, #1
 
 .page-indicator { position: fixed; bottom: 16px; right: 24px; z-index: 99; color: rgba(255,255,255,0.4); pointer-events: none; }
 
-body.scroll-mode, body.scroll-mode html { overflow: auto !important; height: auto !important; background: var(--ms-color-light); }
-body.scroll-mode .deck { height: auto !important; }
+html.scroll-mode, html.scroll-mode body { overflow: auto !important; height: auto !important; background: var(--ms-color-light) !important; }
+html.scroll-mode .deck { height: auto !important; }
 body.scroll-mode .slide { position: relative; aspect-ratio: 16 / 9; margin: 40px auto; max-width: 1280px; box-shadow: 0 2px 20px rgba(0,0,0,0.15); font-size: 16px; border-radius: 24px; }
 body.scroll-mode .page-indicator { display: none; }
 body.scroll-mode .controls { display: none; }
@@ -1429,6 +1429,7 @@ function prev() { if (current > 0) { current--; render(); } }
 function toggleMode() {
   mode = mode === 'slide' ? 'scroll' : 'slide';
   document.body.classList.toggle('scroll-mode');
+  document.documentElement.classList.toggle('scroll-mode');
   render();
 }
 
@@ -1453,6 +1454,7 @@ window.addEventListener('afterprint', () => { render(); });
 if (window.innerWidth <= 768) {
   mode = 'scroll';
   document.body.classList.add('scroll-mode');
+  document.documentElement.classList.add('scroll-mode');
 }
 
 // 觸控滑動支援（slide mode）
