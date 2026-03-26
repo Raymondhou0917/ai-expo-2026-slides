@@ -446,13 +446,110 @@ body.scroll-mode .controls { display: none; }
    ══════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
-  /* 手機預設捲動模式 — slide 卡片化 */
-  body.scroll-mode .slide { margin: 12px 8px; border-radius: 16px; font-size: 14px; box-shadow: 0 1px 12px rgba(0,0,0,0.12); }
+  /* ── 基礎：取消 16:9 比例，改為自適應高度 ── */
+  body.scroll-mode .slide {
+    aspect-ratio: auto !important;
+    margin: 10px 8px;
+    border-radius: 16px;
+    font-size: 16px;
+    min-height: auto;
+    height: auto !important;
+    padding: 28px 20px !important;
+    box-shadow: 0 1px 12px rgba(0,0,0,0.10);
+    overflow: visible !important;
+  }
   body.scroll-mode .slide img { border-radius: 8px; }
-  /* 隱藏底部控制列（手機用捲動） */
   .controls { display: none; }
-  /* brand watermark 縮小 */
-  .slide .brand-watermark { width: 28px; height: 28px; bottom: 8px; right: 10px; }
+  .slide .brand-watermark { display: none !important; }
+
+  /* ── 字級放大（覆蓋 em 變數） ── */
+  body.scroll-mode .slide h1 { font-size: 28px !important; }
+  body.scroll-mode .slide h2 { font-size: 24px !important; }
+  body.scroll-mode .slide h3 { font-size: 20px !important; }
+  body.scroll-mode .slide p,
+  body.scroll-mode .slide li { font-size: 16px !important; }
+  body.scroll-mode .slide td,
+  body.scroll-mode .slide th { font-size: 14px !important; }
+
+  /* ── 多欄版型 → 單欄堆疊 ── */
+  body.scroll-mode .image-1,
+  body.scroll-mode .image-2,
+  body.scroll-mode .gradient-1,
+  body.scroll-mode .gradient-2,
+  body.scroll-mode .screenshot-1,
+  body.scroll-mode .cta-2,
+  body.scroll-mode .profile-1 { flex-direction: column !important; }
+
+  /* image-1 / image-2：圖片全寬 */
+  body.scroll-mode .image-1 .image-frame,
+  body.scroll-mode .image-2 .image-frame { width: 100% !important; margin-bottom: 16px; }
+  body.scroll-mode .image-1 .image-text,
+  body.scroll-mode .image-2 .image-text { width: 100% !important; }
+
+  /* gradient-1 / gradient-2：取消左右分割 */
+  body.scroll-mode .gradient-1 .grad1-img-area,
+  body.scroll-mode .gradient-2 .grad2-img-area { width: 100% !important; height: 200px !important; }
+  body.scroll-mode .gradient-1 .grad1-text,
+  body.scroll-mode .gradient-2 .grad2-text { width: 100% !important; padding: 20px !important; }
+
+  /* cover-1：左右改上下 */
+  body.scroll-mode .cover-1 .cover-1-layout { flex-direction: column !important; padding: 60px 20px 20px !important; }
+  body.scroll-mode .cover-1 .cover-1-left { padding-right: 0 !important; }
+  body.scroll-mode .cover-1 .cover-1-right { width: 100% !important; flex-direction: row !important; justify-content: center; gap: 16px; margin-top: 16px; }
+  body.scroll-mode .cover-1 .cover-1-photo { width: 80px !important; height: 100px !important; }
+  body.scroll-mode .cover-1 .cover-1-qr { width: 70px !important; height: 70px !important; }
+
+  /* profile-1：圖片上方，資訊下方 */
+  body.scroll-mode .profile-1 .p1-img-area { width: 100% !important; height: 200px !important; }
+  body.scroll-mode .profile-1 .p1-right { width: 100% !important; padding: 16px !important; }
+
+  /* screenshot-1 */
+  body.scroll-mode .screenshot-1 .screenshot-left,
+  body.scroll-mode .screenshot-1 .screenshot-right { width: 100% !important; height: auto !important; padding: 16px !important; }
+
+  /* cta-2：QR 下方 */
+  body.scroll-mode .cta-2 .cta2-left { padding: 24px 20px !important; }
+  body.scroll-mode .cta-2 .cta2-right { width: 100% !important; padding: 16px !important; }
+  body.scroll-mode .cta-2 .cta2-qr { width: 50% !important; margin: 0 auto; }
+
+  /* ── Grid 版型：3 欄 → 1 欄 ── */
+  body.scroll-mode .content-3 .content-grid { grid-template-columns: 1fr !important; }
+  body.scroll-mode .data-2 .bento-grid { grid-template-columns: 1fr 1fr !important; }
+  body.scroll-mode .compare-3 .compare-cols { grid-template-columns: 1fr !important; }
+  body.scroll-mode .compare-3 .compare-divider { display: none; }
+  body.scroll-mode .compare-1 .compare-columns { grid-template-columns: 1fr !important; }
+
+  /* ── Fullbleed 圖片 → 自適應高度 ── */
+  body.scroll-mode .fullbleed-1 { padding: 0 !important; min-height: 220px; }
+  body.scroll-mode .fullbleed-1 img { position: relative !important; height: auto !important; }
+
+  /* ── image-padded 圖片 ── */
+  body.scroll-mode .image-padded { padding: 12px !important; }
+  body.scroll-mode .image-padded img { max-width: 100% !important; max-height: none !important; }
+
+  /* ── image-3 底部文字條 ── */
+  body.scroll-mode .image-3 { min-height: 250px; background-size: cover; }
+  body.scroll-mode .image-3 .image-caption-bar { padding: 12px 20px !important; }
+
+  /* ── Quote 版型 ── */
+  body.scroll-mode .quote-1 { padding: 28px 20px !important; }
+  body.scroll-mode .quote-2 .quote-content { padding: 28px 20px !important; }
+  body.scroll-mode .quote-3 .quote-text { font-size: 22px !important; }
+  body.scroll-mode .quote-1 .quote-deco,
+  body.scroll-mode .quote-3 .q3-deco { font-size: 4em !important; }
+
+  /* ── Chapter 版型 ── */
+  body.scroll-mode .chapter-3 { min-height: 280px; padding: 28px 20px !important; }
+  body.scroll-mode .chapter-3 .chapter-bg { position: absolute; }
+
+  /* ── 行內 flex gap 過大修正 ── */
+  body.scroll-mode .slide [style*="gap:1.5em"],
+  body.scroll-mode .slide [style*="gap: 1.5em"] { gap: 12px !important; }
+
+  /* ── profile-3 ── */
+  body.scroll-mode .profile-3 { flex-direction: column !important; }
+  body.scroll-mode .profile-3 .p3-left { width: 100% !important; padding: 24px 20px !important; }
+  body.scroll-mode .profile-3 .p3-right { width: 100% !important; height: 200px !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
