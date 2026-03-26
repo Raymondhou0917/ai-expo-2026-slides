@@ -1,0 +1,1358 @@
+<!-- cache-bust: 1774452620 -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一人公司 AI 工作術 — AI Expo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'zihunbiantaoti';
+  src: url('./assets/zihunbiantaoti.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+/* ── DESIGN.md :root（from raymond-design.md）────────────────────────── */
+:root {
+  --ms-color-primary: #21A4B1;
+  --ms-color-primary-dark: #007481;
+  --ms-color-accent: #E77E47;
+  --ms-color-accent-light: #F6B85A;
+  --ms-color-dark: #111111;
+  --ms-color-dark-content: #3A3A3A;
+  --ms-color-light: #F5F5F5;
+  --ms-color-light-alt: #FDFDFD;
+  --ms-color-text: #3A3A3A;
+  --ms-color-text-light: #999999;
+  --ms-font-heading: 'zihunbiantaoti', 'Noto Sans TC', sans-serif;
+  --ms-font-body-zh: 'Noto Sans TC', sans-serif;
+  --ms-font-body-en: 'Inter', sans-serif;
+  --ms-font-code: monospace;
+  --ms-fs-cover: 3.75em;
+  --ms-fs-heading: 2.75em;
+  --ms-fs-subtitle: 2.125em;
+  --ms-fs-body: 1.75em;
+  --ms-fs-aux: 1.5em;
+  --ms-fs-meta: 1.25em;
+  --ms-radius: 0.25em;
+  --ms-radius-lg: 0.75em;
+  --ms-shadow: 0 0.06em 0.19em rgba(0,0,0,0.08);
+  --ms-slide-padding: 3.75em 5em;
+}
+/* ── MD Slides — 版型 CSS ─────────────────────────────────────────────── */
+/* 只負責佈局結構，所有視覺屬性由 DESIGN.md → CSS variables 決定 */
+/* 此檔案不定義任何 :root 變數。產生簡報時，DESIGN.md 的 :root 寫在 <style> 最前面 */
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; background: var(--ms-color-dark, #111); }
+.deck { position: relative; width: 100%; height: 100vh; }
+
+/* ── Global Typography（從 DESIGN.md 自動套用）────────────────────────── */
+.slide h1 { font-family: var(--ms-font-heading); font-weight: normal; font-size: var(--ms-fs-cover); line-height: 1.3; }
+.slide h2 { font-family: var(--ms-font-heading); font-weight: normal; font-size: var(--ms-fs-heading); line-height: 1.3; }
+.slide h3 { font-family: var(--ms-font-heading); font-weight: normal; font-size: var(--ms-fs-subtitle); line-height: 1.3; }
+.slide p, .slide li { font-family: var(--ms-font-body-zh); font-size: var(--ms-fs-body); font-weight: 500; }
+.slide td, .slide th, .slide label { font-family: var(--ms-font-body-zh); }
+.slide strong { color: var(--ms-color-primary); }
+.slide a { color: var(--ms-color-accent); text-decoration: underline; }
+.en { font-family: var(--ms-font-body-en); }
+.slide .cover-1-url { font-family: var(--ms-font-body-en); }
+/* 字魂扁桃體標題中的英數字保持字魂，不換 Inter */
+.slide h1 .en, .slide h2 .en, .slide h3 .en, .slide .quote-text .en { font-family: inherit; }
+/* 字魂不加粗 — strong 只變色，不加 weight */
+.slide h1 strong, .slide h2 strong, .slide h3 strong, .slide .quote-text strong { font-weight: normal; }
+
+/* ── 煙霧進場動畫 ─────────────────────────────────────────────────────── */
+@keyframes smoke-in {
+  0% { opacity: 0; filter: blur(12px); transform: translateY(8px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* 預設：快速淡入上移 */
+.animate-line { opacity: 0; animation: fadeInUp 0.45s ease-out forwards; animation-delay: calc(var(--i, 0) * 0.12s); }
+/* 封面：煙霧進場（blur + 慢） */
+.slide-cover .animate-line { animation: smoke-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: calc(var(--i, 0) * 0.25s); }
+
+/* ── Utility ──────────────────────────────────────────────────────────── */
+.slide.bg-grid { background-color: var(--ms-color-light-alt); background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 0.75em 0.75em; }
+
+/* ── UI 元素固定 Inter（不隨 DESIGN.md 改變）─────────────────────────── */
+.slide [style*="border-radius:50%"] { font-family: 'Inter', sans-serif; }
+/* content-grid 小字由 .content-3 .content-grid p 統一指定 font-family */
+
+/* ── Base Slide（佈局結構）─────────────────────────────────────────────── */
+.slide {
+  position: relative;
+  width: 100%;
+  /* aspect-ratio 只在 scroll mode 生效，slide mode 靠 inset:0 填滿視窗 */
+  font-family: var(--ms-font-body-zh);
+  color: var(--ms-color-text);
+  font-size: clamp(10px, 1.667vw, 22px); /* 響應式 base: 16px @960px, 全螢幕放大 */
+  --_pad-x: max(5em, calc((100vw - 1600px) / 2 + 5em));
+  padding: 3.75em var(--_pad-x);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--ms-color-light);
+}
+
+/* ── 基礎排版（結構性，字級/字重/行高由 DESIGN.md 指導產生時內聯）───── */
+.slide h1, .slide h2, .slide h3 { margin: 0 0 0.5em; }
+.slide p { margin: 0 0 0.75em; }
+.slide ul, .slide ol { padding-left: 1.4em; margin: 0 0 0.75em; }
+.slide li { margin-bottom: 0.3em; }
+.slide strong { color: var(--ms-color-primary); }
+.slide em { font-style: italic; color: var(--ms-color-accent); }
+.slide a { color: var(--ms-color-accent); text-decoration: underline; }
+.slide blockquote { border-left: 3px solid var(--ms-color-accent); margin: 0 0 0.75em; padding: 0.5em 1em; color: var(--ms-color-text-light); }
+.slide code { padding: 0.1em 0.4em; border-radius: var(--ms-radius); }
+.slide pre { padding: 1em 1.2em; border-radius: var(--ms-radius-lg); overflow: auto; margin: 0 0 0.75em; }
+.slide pre code { padding: 0; }
+.slide table { border-collapse: collapse; width: 100%; margin: 0 0 0.75em; }
+.slide th, .slide td { border: 1px solid rgba(0,0,0,0.12); padding: 0.5em 0.8em; text-align: left; }
+.slide th { background: rgba(0,0,0,0.05); }
+.slide img { max-width: 100%; height: auto; display: block; border-radius: 1em; }
+/* 不加圓角的例外 */
+.slide.fullbleed-1 img { border-radius: 0; }
+.slide .quote-bg { border-radius: 0; }
+
+/* ── End Slide ─────────────────────────────────────────────────────────── */
+.slide-end { justify-content: center; align-items: center; text-align: center; background: var(--ms-color-dark); color: var(--ms-color-light-alt); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COVER — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* cover-1: 左文右圖，頂部色條 */
+.cover-1 { background: var(--ms-color-light-alt); color: var(--ms-color-text); padding: 0; }
+.cover-1 .cover-1-top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--ms-color-accent); }
+.cover-1 .cover-1-brand { position: absolute; top: 1.75em; left: var(--_pad-x, 5em); color: var(--ms-color-text-light); }
+.cover-1 .cover-1-layout { display: flex; width: 100%; height: 100%; padding: 4.5em var(--_pad-x, 5em) 3em; }
+.cover-1 .cover-1-left { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 40px; }
+.cover-1 .cover-1-title-block { display: flex; align-items: flex-start; gap: 16px; }
+.cover-1 .cover-1-title-bar { width: 5px; min-height: 100%; background: var(--ms-color-primary); border-radius: 3px; flex-shrink: 0; }
+.cover-1 .cover-title { color: var(--ms-color-text); margin: 0; }
+.cover-1 .cover-1-subtitle { margin-top: 1em; padding-left: 21px; color: var(--ms-color-text-light); }
+.cover-1 .cover-1-right { width: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; }
+.cover-1 .cover-1-photo { width: 180px; height: 220px; border-radius: var(--ms-radius-lg); overflow: hidden; border: 3px solid var(--ms-color-light); box-shadow: var(--ms-shadow); }
+.cover-1 .cover-1-photo img { width: 100%; height: 100%; object-fit: cover; }
+.cover-1 .cover-1-author-name { color: var(--ms-color-text); display: flex; align-items: center; gap: 6px; }
+.cover-1 .cover-1-author-name::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--ms-color-primary); border-radius: 2px; }
+.cover-1 .cover-1-qr { width: 110px; height: 110px; }
+.cover-1 .cover-1-qr img { width: 100%; height: 100%; object-fit: contain; }
+.cover-1 .cover-1-url { position: absolute; bottom: 4em; left: var(--_pad-x, 5em); color: var(--ms-color-text-light); }
+
+/* cover-2: 左文右漸層色塊 */
+.cover-2 { background: var(--ms-color-dark); color: var(--ms-color-light-alt); align-items: flex-start; }
+.cover-2 .cover-2-gradient { position: absolute; top: 0; right: 0; width: 35%; height: 100%; background: linear-gradient(135deg, var(--ms-color-primary), var(--ms-color-accent)); opacity: 0.85; }
+.cover-2 .cover-content { position: relative; z-index: 1; max-width: 60%; }
+
+/* cover-3: 全圖背景 + 暗層 */
+.cover-3 { background-size: cover; background-position: center; color: var(--ms-color-light-alt); text-align: center; align-items: center; }
+.cover-3 .cover-3-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+.cover-3 .cover-content { position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHAPTER — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* chapter-1: 白底網格 · 橘色圓 badge · Teal 大標 */
+.chapter-1 { background-color: var(--ms-color-light-alt); background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 0.75em 0.75em; color: var(--ms-color-text); }
+.chapter-1 .chapter-badge { display: inline-flex; align-items: center; gap: 0.5em; margin-bottom: 0.75em; }
+.chapter-1 .chapter-num { width: 1.75em; height: 1.75em; border-radius: 50%; background: var(--ms-color-accent); display: flex; align-items: center; justify-content: center; color: var(--ms-color-light-alt); font-family: 'Inter', sans-serif; font-weight: 700; }
+.chapter-1 h2 { color: var(--ms-color-primary); }
+
+/* chapter-2: 主色滿版 */
+.chapter-2 { background: var(--ms-color-primary); color: var(--ms-color-light-alt); text-align: center; align-items: center; }
+.chapter-2 .chapter-number { color: rgba(255,255,255,0.3); }
+
+/* chapter-3: 照片遮罩背景 + 居中文字 */
+.chapter-3 { padding: 0; position: relative; text-align: center; align-items: center; justify-content: center; }
+.chapter-3 .chapter-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 0; }
+.chapter-3 .chapter-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); }
+.chapter-3 .chapter-content { position: relative; z-index: 1; }
+.chapter-3 .chapter-divider { width: 60px; height: 3px; background: var(--ms-color-accent); margin: 1em auto; }
+.chapter-3 .chapter-number { color: var(--ms-color-light-alt); }
+.chapter-3 h2 { color: var(--ms-color-light-alt); }
+.chapter-3 p { color: var(--ms-color-light-alt); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IMAGE — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* image-1: 淺底 · 左大圖 60% + 右文 40% · 帶陰影 */
+.image-1 { background: var(--ms-color-light); flex-direction: row; align-items: center; gap: 1.25em; }
+.image-1 .image-frame { width: 40%; flex-shrink: 0; max-height: 100%; border-radius: var(--ms-radius-lg); overflow: hidden; box-shadow: 0 0.25em 0.375em rgba(0,0,0,0.07), 0 0.625em 1.5em rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); }
+.image-1 .image-frame img { width: 100%; display: block; }
+.image-1 .image-text { flex: 1; min-width: 0; }
+.image-1 .image-text p { font-size: var(--ms-fs-body); }
+
+/* image-2: 主色底 · 左文 + 右大圖 65% · 帶陰影 */
+.image-2 { background: var(--ms-color-primary); color: var(--ms-color-light-alt); flex-direction: row; align-items: center; gap: 1.25em; }
+.image-2 .image-text { flex: 1; min-width: 0; }
+.image-2 .image-text p { font-size: var(--ms-fs-aux); }
+.image-2 .image-frame { width: 40%; flex-shrink: 0; border-radius: var(--ms-radius-lg); overflow: hidden; box-shadow: 0 0.25em 0.375em rgba(0,0,0,0.07), 0 0.625em 1.5em rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); }
+.image-2 .image-frame img { width: 100%; display: block; }
+
+/* image-3: 全圖 + 底部文字條 */
+.image-3 { padding: 0; background-size: cover; background-position: center; }
+.image-3 .image-caption-bar { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); padding: 20px 60px; }
+.image-3 .image-caption { color: var(--ms-color-light-alt); margin: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CONTENT — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* content-1: 白底網格 · 標題 + Teal 分割線 + 條列 */
+.content-1 { background-color: var(--ms-color-light-alt); background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 0.75em 0.75em; }
+.content-1 .content-body { max-width: 100%; }
+.content-2 .content-columns { columns: 2; column-gap: 3em; }
+.content-3 .content-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; }
+.content-3 .content-grid p { font-family: var(--ms-font-body-zh); font-weight: 500; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DATA — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* data-1: 大數字居中 */
+.data-1 { text-align: center; align-items: center; }
+.data-1 .data-stats-center { display: flex; justify-content: center; gap: 3em; flex-wrap: wrap; margin-bottom: 1.5em; }
+.data-1 .data-value { color: var(--ms-color-primary); }
+.data-1 .data-label { color: var(--ms-color-text-light); margin-top: 0.3em; }
+
+/* data-2: Bento grid · inline SVG icons */
+.data-2 { background: var(--ms-color-light); }
+.data-2 .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 0.5em; margin-top: 0.75em; }
+.data-2 .bento-card { background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); border-radius: var(--ms-radius-lg); padding: 1em 0.875em; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--ms-shadow); }
+.data-2 .bento-card .bento-icon { width: 1em; height: 1em; opacity: 0.4; }
+.data-2 .bento-card .data-value { color: var(--ms-color-primary); font-weight: 700; }
+.data-2 .bento-card .data-label { color: var(--ms-color-text-light); margin-top: 0.2em; }
+
+/* data-3: 表格 */
+.data-3 .data-table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+.data-3 .data-table th { background: var(--ms-color-dark); color: var(--ms-color-light-alt); padding: 0.8em 1.2em; text-align: left; }
+.data-3 .data-table td { padding: 0.8em 1.2em; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.data-3 .data-row-highlight .data-value { color: var(--ms-color-primary); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COMPARE — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.compare-1 .compare-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 3em; }
+.compare-2 .compare-table table { width: 100%; border-collapse: collapse; }
+.compare-2 .compare-table th { background: var(--ms-color-primary); color: var(--ms-color-light-alt); padding: 0.7em 1em; }
+.compare-2 .compare-table td { padding: 0.7em 1em; border-bottom: 1px solid rgba(0,0,0,0.08); }
+/* compare-3: 白底網格 · 雙欄 pill 卡片 + 中線 */
+.compare-3 { background-color: var(--ms-color-light-alt); background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 0.75em 0.75em; }
+.compare-3 .compare-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; position: relative; }
+.compare-3 .compare-divider { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.08); }
+.compare-3 .compare-col-title { margin-bottom: 0.6em; }
+.compare-3 .compare-pill { background: var(--ms-color-light-alt); border-radius: var(--ms-radius-lg); padding: 0.5em 0.8em; box-shadow: var(--ms-shadow); margin-bottom: 0.4em; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   QUOTE — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* quote-1: 主色底 · 左對齊 · 大引號 + eyebrow + 標題 + 分隔線 + 副標 */
+.quote-1 { background: var(--ms-color-primary); color: var(--ms-color-light-alt); align-items: flex-start; position: relative; }
+.quote-1 .quote-deco { position: absolute; top: 1.5em; left: 1.5em; font-size: 8em; line-height: 0.8; color: rgba(255,255,255,0.1); font-family: Georgia, serif; pointer-events: none; }
+.quote-1 .quote-eyebrow { font-size: var(--ms-fs-meta); color: rgba(255,255,255,0.6); margin-bottom: 0.5em; }
+.quote-1 h2 { color: var(--ms-color-light-alt); font-family: var(--ms-font-heading); font-weight: normal; }
+.quote-1 .quote-divider { width: 2em; height: 3px; background: var(--ms-color-accent); margin: 1em 0; }
+.quote-1 .quote-subtitle { font-size: var(--ms-fs-aux); color: rgba(255,255,255,0.6); }
+
+/* quote-2: 背景圖 + 深色遮罩 · 橘色 highlight */
+.quote-2 { padding: 0; position: relative; }
+.quote-2 .quote-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.quote-2 .quote-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.75); }
+.quote-2 .quote-content { position: relative; z-index: 1; padding: var(--ms-slide-padding); display: flex; flex-direction: column; justify-content: center; height: 100%; }
+.quote-2 .quote-brand { position: absolute; bottom: 1em; left: 1.5em; display: flex; align-items: center; gap: 0.5em; z-index: 1; }
+
+/* quote-3: 深色底 · 左豎條 · 右上引號 · 底部作者列 */
+.quote-3 { background: var(--ms-color-dark); color: var(--ms-color-light-alt); position: relative; justify-content: center; }
+.quote-3 .q3-bar { position: absolute; left: 0; top: 20%; height: 60%; width: 5px; background: linear-gradient(180deg, var(--ms-color-primary), var(--ms-color-accent)); border-radius: 0 3px 3px 0; }
+.quote-3 .q3-deco { position: absolute; top: 0.8em; right: 1.2em; font-size: 8em; color: rgba(255,255,255,0.04); font-family: Georgia, serif; line-height: 1; pointer-events: none; }
+.quote-3 .q3-body { padding-left: 0.5em; }
+.quote-3 .quote-text { border: none; color: var(--ms-color-light-alt); max-width: 90%; margin: 0; padding: 0; font-family: var(--ms-font-heading); font-weight: normal; }
+.quote-3 .q3-sub { font-family: var(--ms-font-body-en); font-size: var(--ms-fs-meta); color: rgba(255,255,255,0.35); margin-top: 0.6em; }
+.quote-3 .q3-footer { position: absolute; bottom: 1em; left: var(--_pad-x, 5em); right: var(--_pad-x, 5em); display: flex; align-items: center; gap: 0.5em; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.6em; }
+.quote-3 .q3-footer img { width: 1.5em; height: 1.5em; border-radius: 50%; object-fit: cover; }
+.quote-3 .q3-footer .q3-author { font-size: var(--ms-fs-meta); color: rgba(255,255,255,0.5); font-weight: 600; }
+.quote-3 .q3-footer .q3-source { margin-left: auto; font-family: var(--ms-font-body-en); font-size: var(--ms-fs-meta); color: rgba(255,255,255,0.25); }
+/* 所有 quote 版型的引言文字統一用字魂 */
+.slide .quote-text { font-family: var(--ms-font-heading); font-weight: normal; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SCREENSHOT — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* screenshot-1: 截圖左 55% 文右 45% */
+.screenshot-1 { flex-direction: row; padding: 0; }
+.screenshot-1 .screenshot-left { width: 55%; height: 100%; overflow: hidden; padding: 30px; display: flex; align-items: center; }
+.screenshot-1 .screenshot-left img { width: 100%; border-radius: var(--ms-radius-lg); box-shadow: var(--ms-shadow); }
+.screenshot-1 .screenshot-right { width: 45%; padding: 40px; display: flex; align-items: center; }
+
+/* screenshot-2: 截圖上 60% 文下 */
+.screenshot-2 { padding: 30px 60px; }
+.screenshot-2 .screenshot-top { height: 60%; display: flex; align-items: center; justify-content: center; margin-bottom: 1em; }
+.screenshot-2 .screenshot-top img { max-height: 100%; border-radius: var(--ms-radius-lg); box-shadow: var(--ms-shadow); }
+
+/* screenshot-3: 瀏覽器框 */
+.screenshot-3 { padding: 40px 80px; align-items: center; }
+.screenshot-3 .browser-chrome { width: 100%; background: var(--ms-color-light); border-radius: var(--ms-radius-lg) var(--ms-radius-lg) 0 0; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.screenshot-3 .browser-dots { display: flex; gap: 6px; }
+.screenshot-3 .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+.screenshot-3 .browser-address-bar { flex: 1; height: 22px; background: var(--ms-color-light-alt); border-radius: var(--ms-radius); }
+.screenshot-3 .browser-viewport { width: 100%; background: var(--ms-color-light-alt); border-radius: 0 0 var(--ms-radius-lg) var(--ms-radius-lg); overflow: hidden; box-shadow: var(--ms-shadow); }
+.screenshot-3 .browser-viewport img { width: 100%; display: block; }
+.screenshot-3 .screenshot-caption { color: var(--ms-color-text-light); margin-top: 1em; text-align: center; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROFILE — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* profile-1: 全白底，左60%漸層照片，右40% bio+stats */
+.profile-1 { padding: 0; flex-direction: row; background: #fff; }
+.profile-1 .p1-img-area { width: 60%; height: 100%; position: relative; overflow: hidden; }
+.profile-1 .p1-img-area img { width: 100%; height: 100%; object-fit: cover; }
+.profile-1 .p1-img-area::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 0%, transparent 35%, #fff 90%, #fff 100%); }
+.profile-1 .p1-right { width: 40%; padding: 32px 32px 28px 0; display: flex; flex-direction: column; justify-content: center; gap: 0.4em; }
+.profile-1 .p1-stats-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.profile-1 .p1-stat-card { flex: 1; border-radius: 10px; padding: 12px 14px; text-align: center; }
+.profile-1 .p1-stat-card.primary { border: 2px solid color-mix(in srgb, var(--ms-color-primary) 30%, transparent); background: color-mix(in srgb, var(--ms-color-primary) 4%, transparent); }
+.profile-1 .p1-stat-card.accent { border: 2px solid color-mix(in srgb, var(--ms-color-accent-light) 35%, transparent); background: color-mix(in srgb, var(--ms-color-accent-light) 4%, transparent); }
+.profile-1 .p1-stat-full { border-radius: 10px; padding: 12px 14px; border: 2px solid color-mix(in srgb, var(--ms-color-primary) 30%, transparent); background: color-mix(in srgb, var(--ms-color-primary) 4%, transparent); text-align: center; }
+
+/* profile-2: 深色底，居中 */
+.profile-2 { background: var(--ms-color-dark); align-items: center; text-align: center; gap: 6px; }
+.profile-2 .p2-photo { width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 3px solid var(--ms-color-primary); margin-bottom: 6px; }
+.profile-2 .p2-photo img { width: 100%; height: 100%; object-fit: cover; }
+.profile-2 .p2-bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; margin-top: 12px; text-align: left; max-width: 80%; }
+.profile-2 .p2-stats { display: flex; gap: 3em; margin-top: 20px; }
+
+/* profile-3: 主色底，左文右裝飾 */
+.profile-3 { padding: 0; flex-direction: row; background: linear-gradient(150deg, var(--ms-color-primary), var(--ms-color-primary-dark)); }
+.profile-3 .p3-left { width: 55%; padding: 48px 40px 48px 80px; display: flex; flex-direction: column; justify-content: center; }
+.profile-3 .p3-stats { display: flex; gap: 20px; }
+.profile-3 .p3-stat { text-align: center; background: rgba(255,255,255,0.1); border-radius: var(--ms-radius-lg); padding: 14px 20px; min-width: 100px; }
+.profile-3 .p3-right { width: 45%; height: 100%; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.profile-3 .p3-deco-photo { width: 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 4px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.profile-3 .p3-deco-photo img { width: 100%; height: 100%; object-fit: cover; }
+.profile-3 .p3-deco-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); }
+.profile-3 .p3-ring-1 { width: 320px; height: 320px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.profile-3 .p3-ring-2 { width: 440px; height: 440px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.profile-3 .p3-qr { position: absolute; bottom: 28px; right: 28px; width: 80px; height: 80px; background: rgba(255,255,255,0.12); border-radius: var(--ms-radius-lg); padding: 6px; }
+.profile-3 .p3-qr img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CTA — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* cta-1: 深色底，居中大QR */
+.cta-1 { background: var(--ms-color-dark); align-items: center; text-align: center; padding: 40px 80px; gap: 0; }
+.cta-1 .cta1-qr { width: 280px; height: 280px; margin-bottom: 20px; }
+.cta-1 .cta1-qr img { width: 100%; height: 100%; object-fit: contain; }
+
+/* cta-2: 主色底，左文右大QR */
+.cta-2 { background: var(--ms-color-primary); padding: 0; flex-direction: row; }
+.cta-2 .cta2-left { flex: 1; padding: 48px 48px 48px 80px; display: flex; flex-direction: column; justify-content: center; }
+.cta-2 .cta2-right { width: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); }
+.cta-2 .cta2-qr { width: 75%; aspect-ratio: 1; background: #fff; padding: 16px; border-radius: var(--ms-radius-lg); }
+.cta-2 .cta2-qr img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EMBED — 組件（非獨立版型）
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.embed-card { display: flex; flex-direction: row; width: 100%; background: #fff; border-radius: var(--ms-radius-lg); overflow: hidden; border: 1px solid rgba(0,0,0,0.12); cursor: pointer; transition: background 0.2s; }
+.embed-card:hover { background: #fafafa; }
+.embed-card-img { width: 40%; min-height: 100px; object-fit: cover; display: block; border-radius: 0; }
+.embed-card-body { flex: 1; padding: 0.6em 0.8em; display: flex; flex-direction: column; justify-content: center; gap: 0.2em; }
+.embed-card-site { display: flex; align-items: center; gap: 0.3em; font-size: 0.5em; color: var(--ms-color-text-light); }
+.embed-card-site img { width: 1em; height: 1em; border-radius: 2px; }
+.embed-card-title { font-size: 0.65em; font-weight: 700; color: var(--ms-color-primary); line-height: 1.3; }
+.embed-card-desc { font-size: 0.55em; color: var(--ms-color-text-light); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IMAGE-PADDED — 四邊內縮大圖
+   ══════════════════════════════════════════════════════════════════════════ */
+.image-padded { background: var(--ms-color-light); display: flex; align-items: center; justify-content: center; }
+.image-padded img { max-width: 95%; max-height: 95%; border-radius: 1em; box-shadow: 0 0.25em 0.375em rgba(0,0,0,0.07), 0 0.625em 1.5em rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FULLBLEED — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.fullbleed-1 { padding: 0; }
+.fullbleed-1 img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GRADIENT — 版型佈局
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* gradient-1: 左圖片淡化 + 右文字 */
+.gradient-1 { padding: 0; flex-direction: row; background: var(--ms-color-light-alt); }
+.gradient-1 .grad1-img-area { width: 50%; height: 100%; position: relative; overflow: hidden; }
+.gradient-1 .grad1-img-area img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.gradient-1 .grad1-img-area::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 0%, transparent 25%, var(--ms-color-light-alt) 85%, var(--ms-color-light-alt) 100%); }
+.gradient-1 .grad1-text { width: 50%; padding: 40px 48px 40px 0; display: flex; flex-direction: column; justify-content: center; }
+
+/* gradient-2: 左文字 + 右圖片淡化 */
+.gradient-2 { padding: 0; flex-direction: row; background: var(--ms-color-light-alt); }
+.gradient-2 .grad2-text { width: 50%; padding: 40px 0 40px 80px; display: flex; flex-direction: column; justify-content: center; }
+.gradient-2 .grad2-img-area { width: 50%; height: 100%; position: relative; overflow: hidden; }
+.gradient-2 .grad2-img-area img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.gradient-2 .grad2-img-area::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to left, transparent 0%, transparent 25%, var(--ms-color-light-alt) 85%, var(--ms-color-light-alt) 100%); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BRAND WATERMARK — 右下角品牌圖示
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.slide .brand-watermark { position: absolute; bottom: 16px; right: 20px; width: 48px; height: 48px; opacity: 1; z-index: 10; }
+.slide .brand-watermark a { display: block; width: 100%; height: 100%; }
+.slide .brand-watermark img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; cursor: pointer; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PLAYBACK — 播放控制（純功能性，不涉及品牌）
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.controls {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; align-items: center; z-index: 100;
+  background: rgba(0,0,0,0.7); padding: 8px 16px; border-radius: 24px;
+}
+.controls button { background: none; border: none; color: #fff; cursor: pointer; padding: 4px 8px; display: flex; align-items: center; }
+.controls button svg { width: 20px; height: 20px; fill: currentColor; }
+.controls button:hover { opacity: 0.7; }
+#counter { color: #fff; font-family: var(--ms-font-body-en, 'Inter', sans-serif); font-size: 13px; font-weight: 600; min-width: 60px; text-align: center; }
+
+.page-indicator { position: fixed; bottom: 16px; right: 24px; z-index: 99; color: rgba(255,255,255,0.4); pointer-events: none; }
+
+body.scroll-mode { overflow: auto; background: var(--ms-color-light); }
+body.scroll-mode .slide { position: relative; aspect-ratio: 16 / 9; margin: 40px auto; max-width: 1280px; box-shadow: 0 2px 20px rgba(0,0,0,0.15); font-size: 16px; border-radius: 24px; }
+body.scroll-mode .page-indicator { display: none; }
+body.scroll-mode .controls { display: none; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — 手機版優化
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* 手機預設捲動模式 — slide 卡片化 */
+  body.scroll-mode .slide { margin: 12px 8px; border-radius: 16px; font-size: 14px; box-shadow: 0 1px 12px rgba(0,0,0,0.12); }
+  body.scroll-mode .slide img { border-radius: 8px; }
+  /* 隱藏底部控制列（手機用捲動） */
+  .controls { display: none; }
+  /* brand watermark 縮小 */
+  .slide .brand-watermark { width: 28px; height: 28px; bottom: 8px; right: 10px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LIGHTBOX — 點擊圖片放大預覽
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.slide img:not(.brand-watermark img):not(.bento-icon) { cursor: zoom-in; }
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.88); align-items: center; justify-content: center; cursor: zoom-out; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.lightbox.active { opacity: 1; pointer-events: auto; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: var(--ms-radius-lg); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 28px; cursor: pointer; opacity: 0.6; transition: opacity 0.2s; background: none; border: none; z-index: 201; }
+.lightbox-close:hover { opacity: 1; }
+
+@page { margin: 0; size: landscape; }
+
+@media print {
+  /* ── 完全隱藏非投影片元素（不佔任何空間）──────────────── */
+  body > *:not(.deck) {
+    display: none !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  .brand-watermark { display: none !important; }
+
+  /* ── 文件根層級歸零 ──────────────────────────────────── */
+  html, body {
+    height: auto;
+    overflow: visible !important;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .deck {
+    height: auto;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ── 每張投影片 = 一頁 ──────────────────────────────── */
+  .slide {
+    page-break-after: always;
+    page-break-inside: avoid;
+    break-after: page;
+    break-inside: avoid;
+    display: flex !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding-top: 3.75em;
+    padding-bottom: 3.75em;
+    width: 100vw !important;
+    height: 100vh !important;
+    aspect-ratio: auto !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  /* 最後一張不產生額外分頁 */
+  .slide:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* ── 動畫歸零 ───────────────────────────────────────── */
+  .animate-line { opacity: 1 !important; animation: none !important; filter: none !important; transform: none !important; }
+
+  /* ── 背景色 + 漸層保護 ──────────────────────────────── */
+  .slide, .slide *,
+  .slide::before, .slide::after,
+  .slide *::before, .slide *::after,
+  .bento-card, .compare-pill,
+  .chapter-overlay, .chapter-3 .chapter-overlay,
+  .quote-1, .quote-3, .quote-2 .quote-overlay,
+  .grad1-img-area::after, .grad2-img-area::after,
+  .profile-1 .p1-img-area::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ══ #1 cover-1 ══ -->
+<div class="slide slide-cover cover-1">
+  <div class="cover-1-top-bar"></div>
+  <div class="cover-1-brand animate-line" style="--i:0; font-size:var(--ms-fs-meta);">聰明工作、好好生活（雷蒙三十）</div>
+  <div class="cover-1-layout">
+    <div class="cover-1-left">
+      <div class="cover-1-title-block animate-line" style="--i:1">
+        <div class="cover-1-title-bar"></div>
+        <h1 class="cover-title">一人公司 <span class="en">AI</span> 工作術</h1>
+      </div>
+      <div class="cover-1-subtitle animate-line" style="--i:2">
+        <p style="font-size:var(--ms-fs-aux); color:var(--ms-color-text-light);">超級個體時代<br>開會時間 <span class="en">-80%</span> 的<strong>團隊管理術</strong><br>一個不會寫程式的人，怎麼打造<strong>能上班的 <span class="en">AI</span> 分身</strong></p>
+      </div>
+    </div>
+    <div class="cover-1-right">
+      <div class="cover-1-photo animate-line" style="--i:3"><img src="./assets/raymond-author-1.webp" alt=""></div>
+      <div class="cover-1-author-name animate-line" style="--i:4; font-size:var(--ms-fs-meta);">侯智薰（雷蒙）</div>
+      <div class="cover-1-qr animate-line" style="--i:5"><img src="./assets/raymond-qr.png" alt=""></div>
+    </div>
+  </div>
+  <div class="cover-1-url" style="font-size:var(--ms-fs-meta);">lifehacker.tw</div>
+</div>
+
+<!-- ══ #2 cta-2 ══ -->
+<div class="slide cta-2">
+  <div class="cta2-left">
+    <p class="animate-line" style="--i:0; font-size:var(--ms-fs-meta); color:rgba(255,255,255,0.5); letter-spacing:0.05em; text-transform:uppercase;">INTERACTIVE</p>
+    <h2 class="animate-line" style="--i:1; color:var(--ms-color-light-alt);"><span class="en">qa.lifehacker.tw</span></h2>
+    <div class="animate-line" style="--i:2; display:flex; align-items:center; gap:0.6em; margin-bottom:1em;">
+      <span style="font-size:var(--ms-fs-aux); color:rgba(255,255,255,0.6);">密碼（大寫）</span>
+      <span style="font-size:var(--ms-fs-body); font-weight:700; color:var(--ms-color-accent-light); letter-spacing:0.1em;"><span class="en">AIEXPO</span></span>
+    </div>
+    <p class="animate-line" style="--i:3; font-size:var(--ms-fs-meta); color:rgba(255,255,255,0.6);">掃描 QR Code 或輸入網址，即可留言提問</p>
+  </div>
+  <div class="cta2-right">
+    <div class="cta2-qr"><img src="./assets/AI Expo/qaqrcode.webp" alt=""></div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #3 profile-1 ══ -->
+<div class="slide profile-1">
+  <div class="p1-img-area">
+    <img src="./assets/yuiraymond.webp" alt="">
+  </div>
+  <div class="p1-right">
+    <h2 class="animate-line" style="--i:0">侯智薰（雷蒙）</h2>
+    <p class="animate-line" style="--i:1; font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">雷蒙三十品牌創辦人</p>
+    <div class="animate-line" style="--i:2">
+      <ul style="font-size:0.8em; list-style:none; padding:0;">
+        <li style="margin-bottom:0.3em;">每週寫<strong>電子報</strong>給 <span class="en">25,000</span> 人</li>
+        <li style="margin-bottom:0.3em;"><span class="en">AI</span> 工作術主題課，研究<strong>聰明工作法</strong></li>
+        <li style="margin-bottom:0.3em;">不定期更新 <strong><span class="en">YT</span></strong>（柚智夫妻）</li>
+      </ul>
+    </div>
+    <div class="p1-stats-row animate-line" style="--i:3">
+      <div class="p1-stat-card primary">
+        <div style="font-size:var(--ms-fs-meta); font-weight:700;">一人公司邁入 <span class="en">6</span> 年</div>
+        <div style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">團隊 <span class="en">2 → 4</span> 人</div>
+      </div>
+      <div class="p1-stat-card accent">
+        <div style="font-size:var(--ms-fs-meta); font-weight:700;"><span class="en">AI</span> 技能模組 <span class="en">15+</span></div>
+        <div style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">非工程師，<span class="en">30</span> 天</div>
+      </div>
+    </div>
+    <div class="p1-stat-full animate-line" style="--i:4">
+      <div style="font-size:var(--ms-fs-meta); font-weight:700;">中文世界最多學員的 <span class="en">Notion</span> 課程</div>
+      <div style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);"><span class="en">15000+</span> 名</div>
+    </div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #4 content-4 ══ -->
+<div class="slide bg-grid" style="padding:var(--ms-slide-padding);">
+  <h2 class="animate-line" style="--i:0">今天不聊 <span class="en">AI</span> 有多厲害</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); font-weight:500; color:var(--ms-color-text-light);">一個不會寫程式的人，怎麼讓 <span class="en">AI</span> 變成自己的分身。</p>
+  <div class="animate-line" style="--i:2; display:flex; gap:1.5em; margin-top:1.5em;">
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">1</div>
+      <div style="border:2px solid var(--ms-color-accent); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">🧱 地基</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">知識系統化 - <span class="en">Notion AI</span> 團隊管理</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">2</div>
+      <div style="border:2px solid var(--ms-color-primary); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">🌱 養成</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);"><span class="en">AI</span> 分身實戰 - 我做了什麼、踩什麼坑</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #5 chapter-1 ══ -->
+<div class="slide chapter-1">
+  <div class="chapter-badge animate-line" style="--i:0">
+    <div class="chapter-num" style="font-size:var(--ms-fs-aux);">1</div>
+    <span style="font-size:var(--ms-fs-aux); color:var(--ms-color-text-light);">地基篇</span>
+  </div>
+  <h2 class="animate-line" style="--i:1">你今天寫的每一份文件、記錄<br>都是「個人化」<span class="en">AI</span> 的地基</h2>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #6 chapter-3 ══ -->
+<div class="slide chapter-3">
+  <img class="chapter-bg" src="./assets/AI Expo/jj-ying-9Qwbfa_RM94-unsplash.webp" alt="">
+  <div class="chapter-overlay"></div>
+  <div class="chapter-content">
+    <h2 class="animate-line" style="--i:0">團隊 <span class="en">25%</span> 的戰力消失了</h2>
+    <div class="chapter-divider animate-line" style="--i:1"></div>
+    <p class="animate-line" style="--i:2">今年三月，一位夥伴帶家人去日本旅行整整一個月<br>他負責<strong style="color:var(--ms-color-accent);">視覺設計、內容行銷、廣告投放</strong>，三個核心職能同時不在線<br><strong style="color:var(--ms-color-accent);">怎麼辦？</strong></p>
+  </div>
+</div>
+
+<!-- ══ #7 image-4 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);">知識庫（團隊管理中台）</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:var(--ms-color-light-alt);">一個看板，看到團隊全貌，資訊透明，減少人問人。</p>
+  <div class="animate-line" style="--i:2; flex:1; overflow:hidden; border-radius:var(--ms-radius-lg) var(--ms-radius-lg) 0 0; margin-top:1em;">
+    <img src="./assets/AI Expo/v7.webp" alt="團隊管理中台" style="width:100%; border-radius:1em;">
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #8 data-2 ══ -->
+<div class="slide data-2">
+  <h2 class="animate-line" style="--i:0">一整間公司，住在 <span class="en">Notion</span> 裡</h2>
+  <div class="bento-grid animate-line" style="--i:1; grid-template-columns:2fr 1fr 1fr; grid-template-rows:1fr 1fr;">
+    <div class="bento-card" style="grid-row:1/3; background:linear-gradient(160deg, #fff 0%, #fef0e8 100%);">
+      <svg class="bento-icon" style="width:2.5em; height:2.5em;" viewBox="0 0 24 24" fill="none" stroke="var(--ms-color-text-light)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div>
+        <div class="data-value" style="font-size:var(--ms-fs-heading); font-weight:800; color:var(--ms-color-primary);">營運中心</div>
+        <div class="data-label" style="font-size:var(--ms-fs-meta);"><span class="en">SOP</span>、工具、流程管理</div>
+      </div>
+    </div>
+    <div class="bento-card" style="background:linear-gradient(160deg, #fff 0%, #f5f5f5 100%);">
+      <svg class="bento-icon" style="width:2em; height:2em;" viewBox="0 0 24 24" fill="none" stroke="var(--ms-color-text-light)" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <div>
+        <div class="data-value" style="font-size:var(--ms-fs-body); font-weight:800; color:var(--ms-color-primary);">內容行銷</div>
+        <div class="data-label" style="font-size:var(--ms-fs-meta);">文章、影片、社群</div>
+      </div>
+    </div>
+    <div class="bento-card" style="background:linear-gradient(160deg, #fff 0%, #e8f6f7 100%);">
+      <svg class="bento-icon" style="width:2em; height:2em;" viewBox="0 0 24 24" fill="none" stroke="var(--ms-color-text-light)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <div>
+        <div class="data-value" style="font-size:var(--ms-fs-body); font-weight:800; color:var(--ms-color-accent);">業務開發</div>
+        <div class="data-label" style="font-size:var(--ms-fs-meta);">報價、合作、客戶</div>
+      </div>
+    </div>
+    <div class="bento-card" style="background:linear-gradient(160deg, #fff 0%, #fef0e8 100%);">
+      <svg class="bento-icon" style="width:2em; height:2em;" viewBox="0 0 24 24" fill="none" stroke="var(--ms-color-text-light)" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <div>
+        <div class="data-value" style="font-size:var(--ms-fs-body); font-weight:800; color:var(--ms-color-accent);">財務管理</div>
+        <div class="data-label" style="font-size:var(--ms-fs-meta);">收支、對帳、預算</div>
+      </div>
+    </div>
+    <div class="bento-card" style="background:linear-gradient(160deg, #fff 0%, #e8f6f7 100%);">
+      <svg class="bento-icon" style="width:2em; height:2em;" viewBox="0 0 24 24" fill="none" stroke="var(--ms-color-text-light)" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      <div>
+        <div class="data-value" style="font-size:var(--ms-fs-body); font-weight:800; color:var(--ms-color-primary);">人力資源</div>
+        <div class="data-label" style="font-size:var(--ms-fs-meta);">外包協作、任務追蹤</div>
+      </div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #9 chapter-3 ══ -->
+<div class="slide" style="background:var(--ms-color-dark); padding:var(--ms-slide-padding); text-align:center; align-items:center; justify-content:center;">
+  <h2 class="animate-line" style="--i:0; color:#fff;"><span class="en">Notion AI</span>：你公司的 <span class="en">24</span> 小時助理</h2>
+  <div class="animate-line" style="--i:1; width:60px; height:3px; background:var(--ms-color-accent); margin:1em auto;"></div>
+  <p class="animate-line" style="--i:2; color:#fff; font-size:var(--ms-fs-aux);">「幫我查上季跟 <span class="en">A</span> 品牌的合作紀錄。」<br>「這邊有張新名片，幫我加入人脈庫。」</p>
+  <p class="animate-line" style="--i:3; color:#fff; font-size:var(--ms-fs-meta); margin-top:0.8em;">五年累積的知識，不讓 <span class="en">AI</span> 上網亂找、瞎掰。</p>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #10 image-5 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);">如何開報價單？</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:rgba(255,255,255,0.5);">限制 <span class="en">AI</span> 搜尋來源：特定的部門 <span class="en">or Wiki</span> 文檔<br><strong style="color:var(--ms-color-accent);">減少幻覺、避免通用（無用）解</strong></p>
+  <div class="animate-line" style="--i:2; flex:1; display:flex; gap:0.75em; overflow:hidden; margin-top:1em;">
+    <div style="flex:1; overflow:hidden; border-radius:var(--ms-radius-lg) var(--ms-radius-lg) 0 0;">
+      <img src="./assets/AI Expo/v10-1.jpg" alt="限制 AI 搜尋來源" style="width:100%; border-radius:1em;">
+    </div>
+    <div style="flex:1; overflow:hidden; border-radius:var(--ms-radius-lg) var(--ms-radius-lg) 0 0;">
+      <img src="./assets/AI Expo/v10-2.jpg" alt="專屬知識工作流程" style="width:100%; border-radius:1em;">
+    </div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #11 gradient-1 ══ -->
+<div class="slide gradient-1">
+  <div class="grad1-img-area">
+    <img src="./assets/AI Expo/v11.webp" alt="">
+  </div>
+  <div class="grad1-text">
+    <h2 class="animate-line" style="--i:0">知識庫系統的力量</h2>
+    <div class="animate-line" style="--i:1"><p>翻開 <span class="en">Notion</span> 文件，照著流程走，用 <span class="en">AI</span> 補足不懂的地方。</p></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #12 gradient-2 ══ -->
+<div class="slide gradient-2">
+  <div class="grad2-text">
+    <p class="animate-line" style="--i:0; font-size:var(--ms-fs-meta); color:var(--ms-color-primary); letter-spacing:0.05em; text-transform:uppercase;">KNOWLEDGE BASE</p>
+    <h2 class="animate-line" style="--i:1">如何撰寫一份「知識文檔」？<br>也是個文檔。</h2>
+    <div class="animate-line" style="--i:2"><p><span class="en">2021</span> 年，我剛離職的那一年，每做完一件新的工作，就花 <span class="en">10</span> 分鐘把它寫下來。</p><p>品牌合作 <span class="en">SOP</span>、社群活動 <span class="en">Checklist</span>、工具設定步驟，做完就記。</p></div>
+  </div>
+  <div class="grad2-img-area">
+    <img src="./assets/AI Expo/v12.webp" alt="Notion 知識庫">
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #13 quote-2 ══ -->
+<div class="slide" style="padding:0; position:relative;">
+  <img src="./assets/AI Expo/IMG_9463-00-00-03-389.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; border-radius:0;" alt="">
+  <div style="position:absolute; inset:0; background:rgba(0,0,0,0.85);"></div>
+  <div style="position:relative; z-index:1; padding:var(--ms-slide-padding); display:flex; flex-direction:column; justify-content:center; height:100%;">
+    <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt); line-height:1.5;">一人公司的關鍵<br>不是你有多能幹<br>是<span style="color:var(--ms-color-accent);">少了誰，系統都還能轉</span></h2>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #14 content-4 ══ -->
+<div class="slide bg-grid" style="padding:var(--ms-slide-padding);">
+  <h2 class="animate-line" style="--i:0">問題解決庫</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); font-weight:500; color:var(--ms-color-text-light);"><span class="en">80%</span> 問題不需要再問人。知識庫只需要兩種文件：</p>
+  <div class="animate-line" style="--i:2; display:flex; gap:1.5em; margin-top:1.5em;">
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">1</div>
+      <div style="border:2px solid var(--ms-color-accent); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h2 style="font-size:var(--ms-fs-body);">📋 <span class="en">How-to</span></h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">怎麼完成一件事</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">2</div>
+      <div style="border:2px solid var(--ms-color-primary); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">💡 <span class="en">Why</span></h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">為什麼這樣做</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #15 image-1 ══ -->
+<div class="slide image-1">
+  <div class="image-frame animate-line" style="--i:0">
+    <img src="./assets/AI Expo/v15.webp" alt="外包夥伴專門手冊">
+  </div>
+  <div class="image-text">
+    <h2 class="animate-line" style="--i:1">外包夥伴專門手冊</h2>
+    <div class="animate-line" style="--i:2">
+      <ul>
+        <li>公司匯款資訊</li>
+        <li>如何邀約講課、合作方案</li>
+        <li>如何收集發票給會計師</li>
+        <li>……等</li>
+      </ul>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #16 content-3 ══ -->
+<div class="slide content-3" style="background:var(--ms-color-light);">
+  <h2 class="animate-line" style="--i:0"><span class="en">AI</span> 應用三階段</h2>
+  <p class="animate-line" style="--i:1; color:var(--ms-color-text-light);">三年前教學時，我說 <span class="en">AI</span> 應用分三階段。<strong>你現在，人在哪裡呢？</strong></p>
+  <div class="content-grid animate-line" style="--i:2">
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-primary);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-primary); margin-bottom:0.5em;">① <span class="en">2024</span></p>
+      <h3><span class="en">Prompt</span></h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">產出穩定 — 學會跟 <span class="en">AI</span> 對話</p>
+    </div>
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-accent);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-accent); margin-bottom:0.5em;">② <span class="en">2025</span></p>
+      <h3>知識庫</h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">個人化 — 用自己的資料做出差異化</p>
+    </div>
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-accent-light);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-accent-light); margin-bottom:0.5em;">③ <span class="en">2026</span></p>
+      <h3><span class="en">Agent</span></h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">擁有工具 — <span class="en">AI</span> 主動幫你做事</p>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #17 quote-2 ══ -->
+<div class="slide" style="padding:0; position:relative;">
+  <img src="./assets/AI Expo/v11.webp" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; border-radius:0;" alt="">
+  <div style="position:absolute; inset:0; background:rgba(0,0,0,0.85);"></div>
+  <div style="position:relative; z-index:1; padding:var(--ms-slide-padding); display:flex; flex-direction:column; justify-content:center; height:100%;">
+    <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt); line-height:1.5;">你的個人知識文檔越完整、品質越好<br><span style="color:var(--ms-color-accent);">在 AI 時代你就越自由。</span></h2>
+    <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:var(--ms-color-light-alt); margin-top:1em;">團隊的脆弱性來自「知識跟著人走」。<br>知識在系統裡，人可以換，系統不會斷。</p>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #18 chapter-1 ══ -->
+<div class="slide chapter-1">
+  <div class="chapter-badge animate-line" style="--i:0">
+    <div class="chapter-num" style="font-size:var(--ms-fs-aux);">2</div>
+    <span style="font-size:var(--ms-fs-aux); color:var(--ms-color-text-light);">養成篇</span>
+  </div>
+  <h2 class="animate-line" style="--i:1"><span class="en">21</span> 天從零養 <span class="en">AI</span> 分身</h2>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #19 image-padded ══ -->
+<div class="slide image-padded">
+  <img src="./assets/AI Expo/hf_20260313_072922_dcb0aeaf-940b-4ec2-ae1a-f8064e5cedc0 (1).webp" alt="為什麼不用現成工具">
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #20 image-4 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);">家庭財務 <span class="en">Dashboard</span></h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:var(--ms-color-light-alt);">資產淨值、近期支出、訂閱費用——全部可視化。語音輸入記帳，<span class="en">AI</span> 自動分類對帳。</p>
+  <div class="animate-line" style="--i:2; flex:1; overflow:hidden; margin-top:1em;">
+    <img src="./assets/AI Expo/financeos-assetoverview-2026-03-24.webp" alt="財務 Dashboard" style="width:100%; border-radius:1em;">
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+
+<!-- ══ #20a fullbleed-1 ══ -->
+<div class="slide fullbleed-1">
+  <img src="./assets/AI Expo/v21.webp" alt="資產總覽 Dashboard">
+</div>
+
+<!-- ══ #20b fullbleed-1 ══ -->
+<div class="slide fullbleed-1">
+  <img src="./assets/AI Expo/expenditure-dashboard-2026-03-24-annual-expenditure-overview.webp" alt="年度支出總覽">
+</div>
+
+<!-- ══ #21 image-5 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);"><span class="en">Discord Bot</span>：每日精選新聞 & 隨手記帳</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:rgba(255,255,255,0.5);">每天早上 <span class="en">9</span> 點，<span class="en">AI</span> 助理自動推送今日行程、信件重點與待辦 <span class="en">Top 3</span></p>
+  <div class="animate-line" style="--i:2; flex:1; display:flex; gap:0.75em; overflow:hidden; margin-top:1em;">
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/ai-update-news-notion-enterprise-claude-code-openclaw-2026-0.webp" alt="" style="width:100%; border-radius:1em;"></div>
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/雷小蒙 bot 記帳.webp" alt="" style="width:100%; border-radius:1em;"></div>
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/v23-2.webp" alt="" style="width:100%; border-radius:1em;"></div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #22 image-5 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);"><span class="en">Discord Bot</span> 放進團隊管理頻道裡</h2>
+  <div class="animate-line" style="--i:1; flex:1; display:flex; gap:0.75em; overflow:hidden; margin-top:1em;">
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/v24-1.webp" alt="" style="width:100%; border-radius:1em;"></div>
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/v24-2.webp" alt="" style="width:100%; border-radius:1em;"></div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #23 image-4 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);"><span class="en">AI</span> 分身系統 <span class="en">Dashboard</span></h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:var(--ms-color-light-alt);">雷小蒙的系統主頁。專案進度、技能模組與每日自動化任務，集中在單一介面。</p>
+  <div class="animate-line" style="--i:2; flex:1; overflow:hidden; margin-top:1em;"><img src="./assets/AI Expo/v25.avif" alt="" style="width:100%; border-radius:1em;"></div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #24 image-4 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); padding-bottom:0; display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);"><span class="en">20+</span> 個 <span class="en">AI</span> 技能模組</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); color:var(--ms-color-light-alt);">從網站部署、廣告投放、內容創作到財務管理，每個模組都是一個可獨立運作的 <span class="en">AI</span> 工作流程。</p>
+  <div class="animate-line" style="--i:2; flex:1; overflow:hidden; margin-top:1em;"><img src="./assets/AI Expo/kairos-skills-dashboard-2026-03-24.webp" alt="" style="width:100%; border-radius:1em;"></div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+
+<!-- ══ #24c image-padded ══ -->
+<div class="slide image-padded">
+  <img src="./assets/AI Expo/01-instructions-vs-skills.webp" alt="Instructions vs Skills">
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #25 compare-3 ══ -->
+<div class="slide compare-3">
+  <div class="compare-cols animate-line" style="--i:0">
+    <div class="compare-divider"></div>
+    <div>
+      <h3 class="compare-col-title animate-line" style="--i:1; color:var(--ms-color-accent);"><span class="en">GPTs</span>（寫好的 <span class="en">Prompt</span> 打包）</h3>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-accent); font-weight:700;">每次都要開一個對話串</div>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-accent); font-weight:700;">一個對話只能專門做一個任務</div>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-accent); font-weight:700;"><span class="en">AI</span> 只是專職員工</div>
+    </div>
+    <div>
+      <h3 class="compare-col-title animate-line" style="--i:2; color:var(--ms-color-primary);"><span class="en">Skills</span> → 更像真人員工</h3>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-primary); font-weight:700;">訓練好，不用分對話框</div>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-primary); font-weight:700;">會自行調用你教會它的知識</div>
+      <div class="compare-pill" style="font-size:var(--ms-fs-aux); border:2px solid var(--ms-color-primary); font-weight:700;">甚至能快速分享給團隊 → 共創</div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #26 content-4 ══ -->
+<div class="slide bg-grid" style="padding:var(--ms-slide-padding);">
+  <h2 class="animate-line" style="--i:0">第一週：讓 <span class="en">AI</span> 有記憶</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); font-weight:500; color:var(--ms-color-text-light);"><span class="en">AI</span> 不需要記住所有細節，但需要知道<strong>去哪裡找</strong>。</p>
+  <div class="animate-line" style="--i:2; display:flex; gap:1em; margin-top:1.5em;">
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">1</div>
+      <div style="border:2px solid var(--ms-color-accent); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">🧠 精煉</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">核心資訊，每次對話自動載入</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">2</div>
+      <div style="border:2px solid var(--ms-color-primary); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">🕸️ 知識圖譜</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">工具、專案、人脈全部串連</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent-light); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">3</div>
+      <div style="border:2px solid var(--ms-color-accent-light); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">📓 每日日誌</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">時序紀錄，按需回溯</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #27 image-5 ══ -->
+<div class="slide" style="background:var(--ms-color-dark-content); padding:var(--ms-slide-padding); display:flex; flex-direction:column;">
+  <h2 class="animate-line" style="--i:0; color:var(--ms-color-light-alt);"><span class="en">AI</span> 分身助理（<span class="en">Claude Code</span> 架構）</h2>
+  <div class="animate-line" style="--i:1; flex:1; display:flex; gap:0.75em; overflow:hidden; margin-top:1em;">
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/project-repo-structure-diagram-2026-03-24.webp" alt="" style="width:100%; border-radius:1em;"></div>
+    <div style="flex:1; overflow:hidden;"><img src="./assets/AI Expo/content-and-data-layer-and-external-service-integration-arch.webp" alt="" style="width:100%; border-radius:1em;"></div>
+  </div>
+  <a href="https://raymondhouch.com/lifehacker/digital-workflow/21-days-claude-code-ai-agent/" target="_blank" class="animate-line" style="--i:2; text-decoration:none; margin-top:0.75em; display:block; max-width:60%;">
+    <div class="embed-card">
+      <img class="embed-card-img" src="./assets/AI Expo/og-ai-agent-kairos.webp" alt="">
+      <div class="embed-card-body">
+        <div class="embed-card-site">
+          <img src="./assets/logo-square.webp" alt="">
+          <span class="en">雷蒙三十：忙碌現代人的聰明工作、好好生活的生…</span>
+          <span style="margin-left:auto;">↗</span>
+        </div>
+        <div class="embed-card-title"><span class="en">21</span> 天，我用 <span class="en">Claude Code</span> 打造了一整套 <span class="en">AI</span> 分身…</div>
+        <div class="embed-card-desc">非工程師的老闆、個人工作者，怎麼用 <span class="en">Claude Code</span> 打造個人 <span class="en">AI</span> 分身助理？記錄 <span class="en">21</span> 天從零建構、採坑的精華：三層記憶系統讓 <span class="en">AI</span>…</div>
+      </div>
+    </div>
+  </a>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #28 image-3 ══ -->
+<div class="slide screenshot-3" style="background:var(--ms-color-light-alt);">
+  <h2 class="animate-line" style="--i:0"><span class="en">AI</span> 工具的三個層級：從問答到建造</h2>
+  <div class="animate-line" style="--i:1; width:100%;">
+    <div class="browser-chrome">
+      <div class="browser-dots">
+        <div class="browser-dot" style="background:var(--ms-color-accent);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-accent-light);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-primary);"></div>
+      </div>
+      <div class="browser-address-bar"></div>
+    </div>
+    <div class="browser-viewport"><img src="./assets/AI Expo/claude-code-ai-three-tiers-scaled2.webp" alt="AI 工具三層級"></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #24b gradient-1 ══ -->
+<div class="slide gradient-1">
+  <div class="grad1-img-area">
+    <img src="./assets/AI Expo/每日記憶摘要_daily-log-2026-02-26-1.jpg" alt="">
+  </div>
+  <div class="grad1-text">
+    <p class="animate-line" style="--i:0; font-size:var(--ms-fs-meta); color:var(--ms-color-primary); letter-spacing:0.05em; text-transform:uppercase;">AI MEMORY</p>
+    <h2 class="animate-line" style="--i:1">每日記憶摘要</h2>
+    <div class="animate-line" style="--i:2"><p><span class="en">AI</span> 助理自動整理今日對話重點，寫入長期記憶。<br>不用再擔心對話消失，系統會幫你記住。</p></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #29 content-4 ══ -->
+<div class="slide bg-grid" style="padding:var(--ms-slide-padding);">
+  <h2 class="animate-line" style="--i:0">第二週：能力爆發</h2>
+  <p class="animate-line" style="--i:1; font-size:var(--ms-fs-aux); font-weight:500; color:var(--ms-color-text-light);">全部用<strong>打字聊天</strong>做出來的，一行程式都沒寫</p>
+  <div class="animate-line" style="--i:2; display:flex; gap:1em; margin-top:1.5em;">
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">1</div>
+      <div style="border:2px solid var(--ms-color-accent); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">📧 信箱自動化</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">每天省下 <span class="en">60</span> 分鐘</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">2</div>
+      <div style="border:2px solid var(--ms-color-primary); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">🏠 智能家庭</h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">情境自動化設計</p>
+      </div>
+    </div>
+    <div style="flex:1; position:relative; padding-top:1.2em;">
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:2.2em; height:2.2em; border-radius:50%; background:var(--ms-color-accent-light); color:#fff; display:flex; align-items:center; justify-content:center; font-size:var(--ms-fs-aux); font-weight:700; z-index:1;">3</div>
+      <div style="border:2px solid var(--ms-color-accent-light); border-radius:var(--ms-radius-lg); padding:2em 1.5em 1.5em; text-align:center;">
+        <h3 style="font-size:var(--ms-fs-body);">💰 財務 <span class="en">Dashboard</span></h3>
+        <p style="color:var(--ms-color-text-light); font-size:var(--ms-fs-meta);">語音記帳，一鍵對帳</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #30 gradient-2 ══ -->
+<div class="slide gradient-2">
+  <div class="grad2-text">
+    <h2 class="animate-line" style="--i:0">真實挑戰：前三週工作量 <span class="en">200%</span></h2>
+    <div class="animate-line" style="--i:1">
+      <p>原本工作<strong>＋</strong>思考流程<strong>＋</strong>建系統除錯……同時進行。</p>
+      <p>本來每天 <span class="en">12</span> 點要睡，大概都 <span class="en">2</span> 點才睡…</p>
+    </div>
+  </div>
+  <div class="grad2-img-area">
+    <img src="./assets/AI Expo/pexels-photo-10868736.webp" alt="">
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #31 image-1 ══ -->
+<div class="slide image-1">
+  <div class="image-frame animate-line" style="--i:0">
+    <img src="./assets/AI Expo/20260303-jenny-wen-design-process-dead.webp" alt="Jenny Wen">
+  </div>
+  <div class="image-text">
+    <h2 class="animate-line" style="--i:1"><span class="en">Jenny Wen</span> — 設計流程已死</h2>
+    <div class="animate-line" style="--i:2"><p><strong>第三種：有潛力的新人。</strong></p><p style="font-size:var(--ms-fs-aux);">學東西快，沒有固化的流程思維。白紙狀態的快速學習者，可能比滿腦子舊流程的資深人更有優勢。</p></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #32 fullbleed-1 ══ -->
+<div class="slide image-padded">
+  <img src="./assets/AI Expo/v36.webp" alt="切換新工具的陣痛期">
+</div>
+
+<!-- ══ #33 compare-1 ══ -->
+<div class="slide bg-grid" style="padding:var(--ms-slide-padding);">
+  <h2 class="animate-line" style="--i:0">門檻變了</h2>
+  <div class="compare-columns animate-line" style="--i:1; display:grid; grid-template-columns:1fr 1fr; gap:3em; position:relative;">
+    <div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:color-mix(in srgb, var(--ms-color-text) 8%, transparent);"></div>
+    <div>
+      <h3 style="color:var(--ms-color-text-light);">一年前</h3>
+      <p>提 <span class="en">10</span> 個需求，<strong><span class="en">5</span> 個出錯</strong></p>
+      <p style="font-size:var(--ms-fs-aux); color:var(--ms-color-text-light);">門檻：會寫程式</p>
+    </div>
+    <div>
+      <h3 style="color:var(--ms-color-primary);">現在</h3>
+      <p>提 <span class="en">30</span> 個需求，<strong><span class="en">1</span> 個出問題</strong></p>
+      <p style="font-size:var(--ms-fs-aux); color:var(--ms-color-text-light);">門檻：<strong>會描述問題、會追問</strong></p>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #34 image-2 ══ -->
+<div class="slide image-2">
+  <div class="image-text">
+    <h2 class="animate-line" style="--i:0">你不需要等別人<br>你可以自己動手做工具</h2>
+    <div class="animate-line" style="--i:1"><p>掃描 <span class="en">QR Code</span>，看更多 <span class="en">AI</span> 工具實作教學</p></div>
+  </div>
+  <div class="image-frame animate-line" style="--i:2">
+    <img src="./assets/AI Expo/toolqrcode.svg" alt="QR Code" style="background:#fff; padding:1.5em; border-radius:1em;">
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #34b fullbleed-1 ══ -->
+<div class="slide fullbleed-1">
+  <img src="./assets/AI Expo/v39.webp" alt="工具集">
+</div>
+
+<!-- ══ #35b image-3 ══ -->
+<div class="slide screenshot-3 bg-grid">
+  <div class="animate-line" style="--i:0; width:100%;">
+    <div class="browser-chrome">
+      <div class="browser-dots">
+        <div class="browser-dot" style="background:var(--ms-color-accent);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-accent-light);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-primary);"></div>
+      </div>
+      <div class="browser-address-bar"></div>
+    </div>
+    <div class="browser-viewport"><img src="./assets/AI Expo/content-metrics-trends-2026-03-16.webp" alt=""></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #35c image-3 ══ -->
+<div class="slide screenshot-3 bg-grid">
+  <div class="animate-line" style="--i:0; width:100%;">
+    <div class="browser-chrome">
+      <div class="browser-dots">
+        <div class="browser-dot" style="background:var(--ms-color-accent);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-accent-light);"></div>
+        <div class="browser-dot" style="background:var(--ms-color-primary);"></div>
+      </div>
+      <div class="browser-address-bar"></div>
+    </div>
+    <div class="browser-viewport"><img src="./assets/AI Expo/content-table-threads-analysis-2025-09-19.webp" alt=""></div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #35 gradient-1 ══ -->
+<div class="slide gradient-1">
+  <div class="grad1-img-area">
+    <img src="./assets/AI Expo/huang.avif" alt="">
+  </div>
+  <div class="grad1-text">
+    <p class="animate-line" style="--i:0; font-size:var(--ms-fs-meta); color:var(--ms-color-primary); letter-spacing:0.05em; text-transform:uppercase;">JENSEN HUANG</p>
+    <h2 class="animate-line" style="--i:1">黃仁勳說<br>以前做事的煩惱</h2>
+    <div class="animate-line" style="--i:2">
+      <p>「太難了」——<strong>消失了</strong></p>
+      <p>「這要花很長時間」——<strong>消失了</strong></p>
+      <p>「我們需要很多人」——<strong>也消失了</strong></p>
+      <p style="margin-top:0.5em; color:var(--ms-color-primary);">你被還原到了最純粹的狀態：<strong>想像力、行動力</strong>。</p>
+    </div>
+  </div>
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #35d quote-3 ══ -->
+<div class="slide quote-3">
+  <div class="q3-bar"></div>
+  <div class="q3-deco">"</div>
+  <div class="q3-body">
+    <blockquote class="quote-text animate-line" style="--i:0; font-size:var(--ms-fs-heading);"><span class="en">AI</span> 時代的人才標準<br>沒在看誰現在最資深<br>是看誰願意，重新當一個<strong>笨拙的初學者</strong></blockquote>
+  </div>
+  <div class="q3-footer animate-line" style="--i:1">
+    <img src="./assets/raymond-author-1.webp" alt="">
+    <span class="q3-author">侯智薰（雷蒙）</span>
+  </div>
+</div>
+
+<!-- ══ #37 image-padded ══ -->
+<div class="slide image-padded">
+  <img src="./assets/AI Expo/v44.webp" alt="">
+
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #38 content-3 ══ -->
+<div class="slide content-3" style="background:var(--ms-color-light);">
+  <h2 class="animate-line" style="--i:0">立刻可以做的第一步 👣</h2>
+  <div class="content-grid animate-line" style="--i:1">
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-primary);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-primary); margin-bottom:0.5em;"><span class="en">01</span></p>
+      <h3>今天做完一件事<br>花 <span class="en">10</span> 分鐘寫下來</h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">開始留存自己的「好內容」</p>
+    </div>
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-accent);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-accent); margin-bottom:0.5em;"><span class="en">02</span></p>
+      <h3>允許自己暫時變差</h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">不陷入、滿足於舊有的模式</p>
+    </div>
+    <div style="background:var(--ms-color-light-alt); border-radius:var(--ms-radius-lg); padding:1.5em; border-top:4px solid var(--ms-color-primary);">
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-primary); margin-bottom:0.5em;"><span class="en">03</span></p>
+      <h3>目的的意義</h3>
+      <p style="font-size:var(--ms-fs-meta); color:var(--ms-color-text-light);">當 <span class="en">AI</span> 都能代操時<br>你真正想做的是什麼？</p>
+    </div>
+  </div>
+  <div class="brand-watermark"><a href="https://lifehacker.tw" target="_blank"><img src="./assets/logo-square.webp" alt=""></a></div>
+</div>
+
+<!-- ══ #39 info-1 ══ -->
+<div class="slide" style="background:var(--ms-color-light-alt); padding:var(--ms-slide-padding); position:relative;">
+  <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:var(--ms-color-accent);"></div>
+  <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+    <div>
+      <img src="./assets/logo-square.webp" style="width:4em; height:4em; border-radius:var(--ms-radius-lg); margin-bottom:1em;" alt="">
+      <h2 class="animate-line" style="--i:0">更多 <span class="en">AI-Agent</span> 系列教學</h2>
+      <p class="animate-line" style="--i:1; color:var(--ms-color-text-light);">從入門到實戰全紀錄。<br><strong>迷你課程即將上線，留下 <span class="en">Email</span> 搶先獲得通知</strong>。</p>
+    </div>
+    <div style="text-align:center;">
+      <div class="animate-line" style="--i:2; width:8em; height:8em;"><img src="./assets/raymond-qr.png" style="width:100%; height:100%; object-fit:contain;" alt=""></div>
+      <p class="animate-line" style="--i:3; font-size:var(--ms-fs-meta); color:var(--ms-color-text-light); margin-top:0.5em;"><span class="en">lifehacker.tw</span></p>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="controls">
+  <button onclick="prev()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span id="counter"></span>
+  <button onclick="next()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  <button onclick="toggleMode()" title="切換模式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></button>
+  <button onclick="window.print()" title="列印/PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2v1M4.2 4.2l.7.7M1 12h1M21 12h1M18.4 4.9l.7-.7"/><path d="M18 12a6 6 0 00-12 0c0 2.2 1.2 4.1 3 5.2V18a1 1 0 001 1h4a1 1 0 001-1v-.8c1.8-1.1 3-3 3-5.2z"/></svg></button>
+</div>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+document.addEventListener('click', e => {
+  const img = e.target.closest('.slide img');
+  if (!img || img.closest('.brand-watermark') || img.closest('.lightbox')) return;
+  lightboxImg.src = img.src;
+  lightbox.classList.add('active');
+  e.stopPropagation();
+});
+lightbox.addEventListener('click', e => { if (e.target !== lightboxImg) closeLightbox(); });
+function closeLightbox() { lightbox.classList.remove('active'); }
+
+let mode = 'slide';
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+
+function resetAnimations(slide) {
+  slide.querySelectorAll('.animate-line').forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+  });
+}
+
+function render() {
+  if (mode === 'slide') {
+    slides.forEach((s, i) => {
+      s.style.position = 'absolute'; s.style.inset = '0';
+      s.style.display = i === current ? 'flex' : 'none';
+      if (i === current) resetAnimations(s);
+    });
+  } else {
+    slides.forEach(s => { s.style.position = 'relative'; s.style.display = 'flex'; });
+  }
+  counter.textContent = (current + 1) + ' / ' + slides.length;
+}
+
+function next() { if (current < slides.length - 1) { current++; render(); } }
+function prev() { if (current > 0) { current--; render(); } }
+function toggleMode() {
+  mode = mode === 'slide' ? 'scroll' : 'slide';
+  document.body.classList.toggle('scroll-mode');
+  render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  if (e.key === 'f' || e.key === 'F') { document.documentElement.requestFullscreen?.(); }
+  if (e.key === 'Escape') { if (lightbox.classList.contains('active')) { closeLightbox(); } else if (document.fullscreenElement) { document.exitFullscreen(); } }
+});
+
+// 列印前清除 JS inline style，讓 print CSS 完全接管
+window.addEventListener('beforeprint', () => {
+  slides.forEach(s => {
+    s.style.position = '';
+    s.style.inset = '';
+    s.style.display = '';
+  });
+});
+window.addEventListener('afterprint', () => { render(); });
+
+// 手機自動切換捲動模式
+if (window.innerWidth <= 768) {
+  mode = 'scroll';
+  document.body.classList.add('scroll-mode');
+}
+
+// 觸控滑動支援（slide mode）
+let touchStartX = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (mode !== 'slide') return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+  if (dx < 0) next(); else prev();
+});
+
+render();
+</script>
+</body>
+</html>
