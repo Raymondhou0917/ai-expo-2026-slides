@@ -1051,12 +1051,12 @@ body.scroll-mode .controls { display: none; }
 
 <!-- ══ #20a fullbleed-1 ══ -->
 <div class="slide fullbleed-1">
-  <img src="./assets/AI Expo/v21.webp" alt="資產總覽 Dashboard" style="object-fit:contain; background:#0a1628;">
+  <img src="./assets/AI Expo/v21.webp" alt="資產總覽 Dashboard" style="object-fit:contain; object-position:center center; background:#111;">
 </div>
 
 <!-- ══ #20b fullbleed-1 ══ -->
 <div class="slide fullbleed-1">
-  <img src="./assets/AI Expo/expenditure-dashboard-2026-03-24-annual-expenditure-overview.webp" alt="年度支出總覽" style="object-fit:contain; background:#0a1628;">
+  <img src="./assets/AI Expo/expenditure-dashboard-2026-03-24-annual-expenditure-overview.webp" alt="年度支出總覽" style="object-fit:contain; object-position:center center; background:#111;">
 </div>
 
 <!-- ══ #21 image-5 ══ -->
@@ -1512,7 +1512,7 @@ function toggleGrid() {
   const slides = document.querySelectorAll('.slide');
   slides.forEach((s, i) => {
     const cell = document.createElement('div');
-    cell.className = 'grid-cell' + (i === idx ? ' grid-active' : '');
+    cell.className = 'grid-cell' + (i === current ? ' grid-active' : '');
     const clone = s.cloneNode(true);
     clone.classList.add('grid-slide-clone');
     clone.style.cssText = s.style.cssText;
@@ -1525,7 +1525,7 @@ function toggleGrid() {
     num.textContent = i + 1;
     cell.appendChild(clone);
     cell.appendChild(num);
-    cell.addEventListener('click', () => { idx = i; ov.remove(); render(); });
+    cell.addEventListener('click', () => { current = i; ov.remove(); render(); });
     ov.appendChild(cell);
   });
   document.body.appendChild(ov);
