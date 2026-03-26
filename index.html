@@ -443,61 +443,59 @@ body.scroll-mode .page-indicator { display: none; }
 body.scroll-mode .controls { display: none; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   GRID / LIGHT TABLE — 投影片一覽
+   GRID / LIGHT TABLE — 投影片一覽（直接用原始 slide 排列，不 clone）
    ══════════════════════════════════════════════════════════════════════════ */
-#grid-overlay {
-  position: fixed; inset: 0; z-index: 10000;
-  background: #1a1a1a;
-  display: grid;
+html.grid-mode, html.grid-mode body { overflow: auto !important; height: auto !important; background: #1a1a1a !important; }
+html.grid-mode .controls { opacity: 0; pointer-events: none; }
+html.grid-mode .deck {
+  display: grid !important;
   grid-template-columns: repeat(3, 1fr);
   gap: 48px 28px;
-  padding: 36px 40px 36px;
-  overflow-y: auto;
-  align-content: start;
+  padding: 36px 40px;
+  height: auto !important;
+  width: 100% !important;
+  position: relative !important;
 }
-#grid-overlay .grid-cell {
-  position: relative;
-  aspect-ratio: 16/9;
-  overflow: hidden;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #000;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  transition: outline 0.15s, transform 0.15s;
-}
-#grid-overlay .grid-cell:hover { transform: scale(1.04); outline: 2px solid var(--ms-color-primary); z-index: 1; }
-#grid-overlay .grid-cell.grid-active { outline: 3px solid #E77E47; }
-#grid-overlay .grid-slide-clone {
-  position: absolute !important;
+html.grid-mode .slide {
+  position: relative !important;
   inset: auto !important;
-  top: 0 !important; left: 0 !important;
-  width: 1920px !important; height: 1080px !important;
-  transform-origin: top left;
-  pointer-events: none;
   display: flex !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
   overflow: hidden !important;
-  margin: 0 !important;
+  transition: outline 0.15s, transform 0.15s;
+  font-size: clamp(4px, 0.55vw, 8px);
 }
-#grid-overlay .grid-slide-clone * { pointer-events: none; }
-#grid-overlay .grid-slide-clone .brand-watermark { display: none !important; }
-#grid-overlay .grid-slide-clone .animate-line { opacity: 1 !important; animation: none !important; }
-#grid-overlay .grid-num {
-  position: absolute;
-  bottom: -28px; left: 50%;
-  transform: translateX(-50%);
+html.grid-mode .slide:hover { outline: 2px solid var(--ms-color-primary); transform: scale(1.03); z-index: 1; }
+html.grid-mode .slide.grid-current { outline: 3px solid #E77E47; }
+html.grid-mode .slide .brand-watermark { display: none !important; }
+html.grid-mode .slide .animate-line { opacity: 1 !important; animation: none !important; }
+html.grid-mode .slide::after {
+  content: attr(data-slide-num);
+  position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
   color: rgba(255,255,255,0.5);
-  font-size: 14px;
-  font-family: var(--ms-font-body-en, sans-serif);
-  font-weight: 600;
+  font-size: 14px; font-family: var(--ms-font-body-en, sans-serif); font-weight: 600;
+  white-space: nowrap;
 }
-#grid-overlay .grid-cell.grid-active .grid-num {
+html.grid-mode .slide.grid-current::after {
   color: #E77E47;
   background: rgba(231,126,71,0.15);
-  padding: 2px 14px;
-  border-radius: 12px;
+  padding: 2px 14px; border-radius: 12px;
 }
+/* 光桌模式下覆蓋固定 px 尺寸（cover-1 右側等） */
+html.grid-mode .cover-1 .cover-1-right { width: 80px; }
+html.grid-mode .cover-1 .cover-1-photo { width: 50px; height: 65px; }
+html.grid-mode .cover-1 .cover-1-qr { width: 40px; height: 40px; }
+html.grid-mode .profile-1 .p1-right { padding: 8px; }
+html.grid-mode .screenshot-3 .browser-dot { width: 3px; height: 3px; }
+html.grid-mode .cta-1 .cta1-qr { width: 80px; height: 80px; }
+
 @media (max-width: 768px) {
-  #grid-overlay { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; padding: 20px 12px; }
+  html.grid-mode .deck { grid-template-columns: repeat(2, 1fr); gap: 36px 12px; padding: 20px 12px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1501,8 +1499,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
   if (e.key === 'f' || e.key === 'F') { document.documentElement.requestFullscreen?.(); }
-  if (e.key === 'g' || e.key === 'G') { if (!document.getElementById('grid-overlay')) toggleGrid(); }
-  if (e.key === 'Escape') { const gov = document.getElementById('grid-overlay'); if (gov) { gov.remove(); } else if (lightbox.classList.contains('active')) { closeLightbox(); } else if (document.fullscreenElement) { document.exitFullscreen(); } }
+  if (e.key === 'g' || e.key === 'G') { toggleGrid(); }
+  if (e.key === 'Escape') { if (document.body.classList.contains('grid-mode')) { toggleGrid(); } else if (lightbox.classList.contains('active')) { closeLightbox(); } else if (document.fullscreenElement) { document.exitFullscreen(); } }
 });
 
 // 列印前清除 JS inline style，讓 print CSS 完全接管
@@ -1515,48 +1513,35 @@ window.addEventListener('beforeprint', () => {
 });
 window.addEventListener('afterprint', () => { render(); });
 
-// 光桌一覽
+// 光桌一覽（直接切換 deck 為 grid 佈局，不 clone）
 function toggleGrid() {
-  let ov = document.getElementById('grid-overlay');
-  if (ov) { ov.remove(); return; }
-  ov = document.createElement('div');
-  ov.id = 'grid-overlay';
-  const slides = document.querySelectorAll('.slide');
-  slides.forEach((s, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'grid-cell' + (i === current ? ' grid-active' : '');
-    const clone = s.cloneNode(true);
-    clone.classList.add('grid-slide-clone');
-    // 保留 HTML 原始 inline style，但清掉 render() 設的 inset/position
-    const origAttr = s.getAttribute('data-orig-style') || s.getAttribute('style') || '';
-    clone.setAttribute('style', origAttr);
-    clone.style.position = 'absolute';
-    clone.style.inset = 'auto';
-    clone.style.top = '0';
-    clone.style.left = '0';
-    clone.style.width = '1920px';
-    clone.style.height = '1080px';
-    clone.style.display = 'flex';
-    clone.style.margin = '0';
-    const num = document.createElement('span');
-    num.className = 'grid-num';
-    num.textContent = i + 1;
-    cell.appendChild(clone);
-    cell.appendChild(num);
-    cell.addEventListener('click', () => { current = i; ov.remove(); render(); });
-    ov.appendChild(cell);
-  });
-  document.body.appendChild(ov);
-  requestAnimationFrame(() => {
-    const cellW = ov.querySelector('.grid-cell').offsetWidth;
-    const scale = cellW / 1920;
-    ov.querySelectorAll('.grid-slide-clone').forEach(c => { c.style.transform = 'scale(' + scale + ')'; });
+  const isGrid = document.body.classList.toggle('grid-mode');
+  document.documentElement.classList.toggle('grid-mode');
+  if (isGrid) {
+    // 還原每張 slide 的原始 inline style + 設 data-slide-num
+    slides.forEach((s, i) => {
+      s.style.cssText = s.getAttribute('data-orig-style') || '';
+      s.setAttribute('data-slide-num', i + 1);
+      s.classList.toggle('grid-current', i === current);
+      s._gridClick = () => {
+        current = i;
+        toggleGrid(); // 關閉光桌
+        render();
+      };
+      s.addEventListener('click', s._gridClick);
+    });
     // 捲動到當前 slide
-    const active = ov.querySelector('.grid-active');
-    if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
-  });
-  const closeOnKey = (e) => { if (e.key === 'Escape' || e.key === 'g' || e.key === 'G') { ov.remove(); document.removeEventListener('keydown', closeOnKey); e.stopPropagation(); } };
-  document.addEventListener('keydown', closeOnKey);
+    requestAnimationFrame(() => {
+      const cur = document.querySelector('.grid-current');
+      if (cur) cur.scrollIntoView({ block: 'center', behavior: 'instant' });
+    });
+  } else {
+    slides.forEach(s => {
+      if (s._gridClick) { s.removeEventListener('click', s._gridClick); delete s._gridClick; }
+      s.classList.remove('grid-current');
+    });
+    render();
+  }
 }
 
 // 手機自動切換捲動模式
