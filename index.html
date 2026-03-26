@@ -443,6 +443,54 @@ body.scroll-mode .page-indicator { display: none; }
 body.scroll-mode .controls { display: none; }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   GRID / LIGHT TABLE — 投影片一覽
+   ══════════════════════════════════════════════════════════════════════════ */
+#grid-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(17,17,17,0.97);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 20px;
+  overflow-y: auto;
+}
+#grid-overlay .grid-cell {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--ms-color-dark, #111);
+  transition: outline 0.15s, transform 0.15s;
+}
+#grid-overlay .grid-cell:hover { transform: scale(1.03); outline: 2px solid var(--ms-color-primary); }
+#grid-overlay .grid-cell.grid-active { outline: 3px solid #E77E47; }
+#grid-overlay .grid-slide-clone {
+  position: absolute !important;
+  top: 0; left: 0;
+  width: 1920px !important; height: 1080px !important;
+  transform-origin: top left;
+  pointer-events: none;
+  display: flex !important;
+  overflow: hidden;
+}
+#grid-overlay .grid-slide-clone * { pointer-events: none; }
+#grid-overlay .grid-num {
+  position: absolute;
+  bottom: 6px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-family: var(--ms-font-body-en, sans-serif);
+}
+@media (max-width: 768px) {
+  #grid-overlay { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    MOBILE — 手機版優化
    ══════════════════════════════════════════════════════════════════════════ */
 
@@ -1003,12 +1051,12 @@ body.scroll-mode .controls { display: none; }
 
 <!-- ══ #20a fullbleed-1 ══ -->
 <div class="slide fullbleed-1">
-  <img src="./assets/AI Expo/v21.webp" alt="資產總覽 Dashboard">
+  <img src="./assets/AI Expo/v21.webp" alt="資產總覽 Dashboard" style="object-fit:contain; background:#0a1628;">
 </div>
 
 <!-- ══ #20b fullbleed-1 ══ -->
 <div class="slide fullbleed-1">
-  <img src="./assets/AI Expo/expenditure-dashboard-2026-03-24-annual-expenditure-overview.webp" alt="年度支出總覽">
+  <img src="./assets/AI Expo/expenditure-dashboard-2026-03-24-annual-expenditure-overview.webp" alt="年度支出總覽" style="object-fit:contain; background:#0a1628;">
 </div>
 
 <!-- ══ #21 image-5 ══ -->
@@ -1382,6 +1430,7 @@ body.scroll-mode .controls { display: none; }
   <button onclick="next()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
   <button onclick="toggleMode()" title="切換模式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg></button>
   <button onclick="window.print()" title="列印/PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2v1M4.2 4.2l.7.7M1 12h1M21 12h1M18.4 4.9l.7-.7"/><path d="M18 12a6 6 0 00-12 0c0 2.2 1.2 4.1 3 5.2V18a1 1 0 001 1h4a1 1 0 001-1v-.8c1.8-1.1 3-3 3-5.2z"/></svg></button>
+  <button onclick="toggleGrid()" title="光桌一覽 (G)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
 </div>
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
@@ -1440,7 +1489,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
   if (e.key === 'f' || e.key === 'F') { document.documentElement.requestFullscreen?.(); }
-  if (e.key === 'Escape') { if (lightbox.classList.contains('active')) { closeLightbox(); } else if (document.fullscreenElement) { document.exitFullscreen(); } }
+  if (e.key === 'g' || e.key === 'G') { if (!document.getElementById('grid-overlay')) toggleGrid(); }
+  if (e.key === 'Escape') { const gov = document.getElementById('grid-overlay'); if (gov) { gov.remove(); } else if (lightbox.classList.contains('active')) { closeLightbox(); } else if (document.fullscreenElement) { document.exitFullscreen(); } }
 });
 
 // 列印前清除 JS inline style，讓 print CSS 完全接管
@@ -1452,6 +1502,44 @@ window.addEventListener('beforeprint', () => {
   });
 });
 window.addEventListener('afterprint', () => { render(); });
+
+// 光桌一覽
+function toggleGrid() {
+  let ov = document.getElementById('grid-overlay');
+  if (ov) { ov.remove(); return; }
+  ov = document.createElement('div');
+  ov.id = 'grid-overlay';
+  const slides = document.querySelectorAll('.slide');
+  slides.forEach((s, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell' + (i === idx ? ' grid-active' : '');
+    const clone = s.cloneNode(true);
+    clone.classList.add('grid-slide-clone');
+    clone.style.cssText = s.style.cssText;
+    clone.style.position = 'absolute';
+    clone.style.width = '1920px';
+    clone.style.height = '1080px';
+    clone.style.display = 'flex';
+    const num = document.createElement('span');
+    num.className = 'grid-num';
+    num.textContent = i + 1;
+    cell.appendChild(clone);
+    cell.appendChild(num);
+    cell.addEventListener('click', () => { idx = i; ov.remove(); render(); });
+    ov.appendChild(cell);
+  });
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => {
+    const cellW = ov.querySelector('.grid-cell').offsetWidth;
+    const scale = cellW / 1920;
+    ov.querySelectorAll('.grid-slide-clone').forEach(c => { c.style.transform = 'scale(' + scale + ')'; });
+    // 捲動到當前 slide
+    const active = ov.querySelector('.grid-active');
+    if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
+  });
+  const closeOnKey = (e) => { if (e.key === 'Escape' || e.key === 'g' || e.key === 'G') { ov.remove(); document.removeEventListener('keydown', closeOnKey); e.stopPropagation(); } };
+  document.addEventListener('keydown', closeOnKey);
+}
 
 // 手機自動切換捲動模式
 if (window.innerWidth <= 768) {
