@@ -1,0 +1,7 @@
+{
+  "host": "expo.lifehacker.tw",
+  "pages": [
+    "index.html"
+  ],
+  "redirectRoot": false
+}
